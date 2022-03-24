@@ -1,36 +1,54 @@
-import styles from '/styles/AttendanceForm.module.css'
-import React, { useEffect, useState } from "react";
+import styles from '/styles/AttendanceForm.module.css';
+
+import { useRouter } from 'next/router';
+import { useEffect, useState } from "react";
 
 export default function AttendanceForm() {
-  const [user, setUser] = useState(null);
 
-  useEffect(function() {
-    const params = new URLSearchParams(window.location.search);
-    setUser(params.get('userid'));
+  const [user, setUser] = useState(null);
+  const router = useRouter();
+
+  useEffect(async function() {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    const guest = await fetch(`/api/guest?id=${id}`).then(data => data.json());
+    setUser(guest);
   });
 
-  const handleClick = async (event) => {
-    event.preventDefault();
+  async function saveAttendence(event) {
+    const attending = event.target.id === 'option-1-button';
 
-    //use api
+    const attendence = {
+      id: user.id,
+      attending: attending
+    };
 
-    //redirect
-  }
+    const response = await fetch('/api/attendance', {
+      method: 'POST',
+      body: JSON.stringify(attendence)
+    });
 
-  const acceptLink = `/api/attendance?userid=${user}&attending=true`;
-  const declineLink = `/api/attendance?userid=${user}&attending=false`;
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    };
 
-  return (
+    const base = '/rsvp/';
+    const path = attending ? `details_form?userid=${user.id}` : 'finish'
+
+    router.push(base + path);
+  };
+
+  return (user &&
     <div className="container">
-      <h1 className={styles.title}>Hello{' ' + user}</h1>
+      <h1 className={styles.title}>Hello{' ' + user.first_name + ' ' + user.last_name}</h1>
       <div className={styles.confirmContainer}>
         <label>Will you be attending?</label>
         <div className={styles.wrapper}>
             <div className={styles.buttonContainer}>
-              <button className={styles.button} onClick={handleClick} id="option-1-button">Yes</button>
+              <button onClick={saveAttendence} id="option-1-button">Yes</button>
             </div>
             <div className={styles.buttonContainer}>
-              <button className={styles.button} onClick={handleClick} id="option-2-button">No</button>
+              <button onClick={saveAttendence} id="option-2-button">No</button>
             </div>
         </div>
       </div>
