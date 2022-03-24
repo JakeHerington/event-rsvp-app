@@ -8,12 +8,17 @@ export default function AttendanceForm() {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
-  useEffect(async function() {
+  useEffect(function() {
+    async function fetchData() {
+      const guest = await fetch(`/api/guest?id=${id}`).then(data => data.json());
+      setUser(guest);
+    };
+    
     const params = new URLSearchParams(location.search);
     const id = params.get('id');
-    const guest = await fetch(`/api/guest?id=${id}`).then(data => data.json());
-    setUser(guest);
-  });
+    
+    fetchData();
+  }, []);
 
   async function saveAttendence(event) {
     const attending = event.target.id === 'option-1-button';
