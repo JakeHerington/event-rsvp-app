@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./store.db"
+  url      = "file:./store.db?connection_timeout=30000"
 }
 
 // model User {
@@ -25,7 +25,6 @@ model Guest {
   last_name String
   address String
   attending Boolean
-  plus_one_ids String
   diet String
   comment String
 }
@@ -35,4 +34,5 @@ model PlusOne {
   first_name String
   last_name String
   diet String
+  guest_id Int
 }

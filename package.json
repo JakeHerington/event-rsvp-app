@@ -4,10 +4,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma-studio": "prisma studio"
   },
   "dependencies": {
-    "@prisma/client": "^3.11.0",
+    "@prisma/client": "^3.11.1",
     "next": "latest",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -16,6 +17,6 @@
   "devDependencies": {
     "eslint": "8.4.1",
     "eslint-config-next": "latest",
-    "prisma": "^3.11.0"
+    "prisma": "^3.11.1"
   }
 }
