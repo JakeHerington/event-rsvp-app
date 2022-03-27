@@ -1,24 +1,13 @@
 import styles from '/styles/AttendanceForm.module.css';
 
 import { useRouter } from 'next/router';
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { getData } from '../api/guest'; 
 
-export default function AttendanceForm() {
+export default function AttendanceForm(props) {
 
-  const [guest, setGuest] = useState(null);
+  const [guest, setGuest] = useState(props.guest);
   const router = useRouter();
-
-  useEffect(function() {
-    async function fetchData() {
-      const guest = await fetch(`/api/guest?id=${id}`).then(data => data.json());
-      setGuest(guest);
-    };
-
-    const params = new URLSearchParams(location.search);
-    const id = params.get('id');
-    
-    fetchData();
-  }, []);
 
   async function saveAttendence(event) {
     const attending = event.target.id === 'option-1-button';
@@ -41,9 +30,9 @@ export default function AttendanceForm() {
     router.push({
       pathname: '/rsvp/' + path,
       query: { 
-        guest: JSON.stringify(guest) 
+        id: guest.id, 
       },
-    }, '/rsvp/details_form');
+    });
   };
 
   return (guest &&
@@ -62,4 +51,11 @@ export default function AttendanceForm() {
       </div>
     </div>
   )
+}
+
+export async function getServerSideProps(context) {
+  const guest = await getData(context.query.id);
+  return {
+    props: { guest: guest },
+  }
 }

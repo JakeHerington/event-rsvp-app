@@ -2,17 +2,18 @@ import styles from '/styles/DetailsForm.module.css'
 
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
+import { getData } from '../api/guest';
 
-export default function DetailsForm() {
+export default function DetailsForm(props) {
 
-  const [guest, setGuest] = useState(null);
+  const [guest, setGuest] = useState(props.guest);
   const [plusOnes, setPlusOnes] = useState(0);
   const router = useRouter();
 
-  useEffect(function() {
-    const guest = JSON.parse(router.query.guest);
-    setGuest(guest);
-  }, [router.query.guest]);
+  // useEffect(function() {
+  //   const guest = JSON.parse(router.query.guest);
+  //   setGuest(guest);
+  // }, [router.query.guest]);
 
   const plusOneDetails = (event) => {
     setPlusOnes(parseInt(event.target.value));
@@ -102,4 +103,11 @@ export default function DetailsForm() {
       </form>
     </div>
   )
+}
+
+export async function getServerSideProps(context) {
+  const guest = await getData(context.query.id);
+  return {
+    props: { guest: guest },
+  }
 }
