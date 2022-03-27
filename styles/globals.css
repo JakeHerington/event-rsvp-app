@@ -46,7 +46,6 @@ input:focus {
 
 select {
   display: table;
-  width: 20%;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 0.25rem;
@@ -78,5 +77,19 @@ button:hover {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+}
+
+.required {
+  color: red;
+}
+
+textarea {
+  display: table;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  margin-bottom: 2.5rem;
+  overflow-y: scroll;
 }

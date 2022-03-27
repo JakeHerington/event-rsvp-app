@@ -5,15 +5,15 @@ import { useEffect, useState } from "react";
 
 export default function AttendanceForm() {
 
-  const [user, setUser] = useState(null);
+  const [guest, setGuest] = useState(null);
   const router = useRouter();
 
   useEffect(function() {
     async function fetchData() {
       const guest = await fetch(`/api/guest?id=${id}`).then(data => data.json());
-      setUser(guest);
+      setGuest(guest);
     };
-    
+
     const params = new URLSearchParams(location.search);
     const id = params.get('id');
     
@@ -24,7 +24,7 @@ export default function AttendanceForm() {
     const attending = event.target.id === 'option-1-button';
 
     const attendence = {
-      id: user.id,
+      id: guest.id,
       attending: attending
     };
 
@@ -37,15 +37,18 @@ export default function AttendanceForm() {
       throw new Error(response.statusText);
     };
 
-    const base = '/rsvp/';
-    const path = attending ? `details_form?userid=${user.id}` : 'finish'
-
-    router.push(base + path);
+    const path = attending ? 'details_form' : 'finish'
+    router.push({
+      pathname: '/rsvp/' + path,
+      query: { 
+        guest: JSON.stringify(guest) 
+      },
+    }, '/rsvp/details_form');
   };
 
-  return (user &&
+  return (guest &&
     <div className="container">
-      <h1 className={styles.title}>Hello{' ' + user.first_name + ' ' + user.last_name}</h1>
+      <h1 className={styles.title}>Hello{' ' + guest.first_name + ' ' + guest.last_name}</h1>
       <div className={styles.confirmContainer}>
         <label>Will you be attending?</label>
         <div className={styles.wrapper}>
