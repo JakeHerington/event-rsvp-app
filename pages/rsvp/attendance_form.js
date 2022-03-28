@@ -2,7 +2,8 @@ import styles from '/styles/AttendanceForm.module.css';
 
 import { useRouter } from 'next/router';
 import { useState } from "react";
-import { getData } from '../api/guest'; 
+//import { getData } from '../api/guest';
+import { read } from '../api/guest/[id]'
 
 export default function AttendanceForm(props) {
 
@@ -12,15 +13,25 @@ export default function AttendanceForm(props) {
   async function saveAttendence(event) {
     const attending = event.target.id === 'option-1-button';
 
-    const attendence = {
-      id: guest.id,
-      attending: attending
+    // const attendence = {
+    //   id: guest.id,
+    //   attending: attending
+    // };
+
+    const updatedGuest = {
+      ...guest,
+      attending: attending,
     };
 
-    const response = await fetch('/api/attendance', {
-      method: 'POST',
-      body: JSON.stringify(attendence)
+    const response = await fetch('/api/guest', {
+      method: 'PUT',
+      body: JSON.stringify(updatedGuest)
     });
+
+    // const response = await fetch('/api/attendance', {
+    //   method: 'POST',
+    //   body: JSON.stringify(attendence)
+    // });
 
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -54,7 +65,12 @@ export default function AttendanceForm(props) {
 }
 
 export async function getServerSideProps(context) {
-  const guest = await getData(context.query.id);
+  // const guest = await getData(context.query.id);
+  // return {
+  //   props: { guest: guest },
+  // }
+
+  const guest = await read(context.query.id);
   return {
     props: { guest: guest },
   }

@@ -1,19 +1,14 @@
 import styles from '/styles/DetailsForm.module.css'
 
 import { useRouter } from 'next/router';
-import { useEffect, useState } from "react";
-import { getData } from '../api/guest';
+import { useState } from "react";
+import { read } from '../api/guest/[id]';
 
 export default function DetailsForm(props) {
 
   const [guest, setGuest] = useState(props.guest);
   const [plusOnes, setPlusOnes] = useState(0);
   const router = useRouter();
-
-  // useEffect(function() {
-  //   const guest = JSON.parse(router.query.guest);
-  //   setGuest(guest);
-  // }, [router.query.guest]);
 
   const plusOneDetails = (event) => {
     setPlusOnes(parseInt(event.target.value));
@@ -43,16 +38,16 @@ export default function DetailsForm(props) {
       });
     });
 
-    const guest_details = {
-      id: guest.id,
+    const updatedGuest = {
+      ...guest,
       email: email,
       diet: diet,
       comment: comment,
-    }
+    };
 
     await fetch('/api/details', {
-      method: 'POST',
-      body: JSON.stringify(guest_details),
+      method: 'PUT',
+      body: JSON.stringify(updatedGuest),
     });
     
     router.push('/rsvp/finish');
@@ -106,7 +101,7 @@ export default function DetailsForm(props) {
 }
 
 export async function getServerSideProps(context) {
-  const guest = await getData(context.query.id);
+  const guest = await read(context.query.id);
   return {
     props: { guest: guest },
   }
