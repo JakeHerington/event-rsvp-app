@@ -19,20 +19,22 @@ datasource db {
 // }
 
 model Guest {
-  id Int @id @default(autoincrement())
-  email String
+  id         Int       @id @default(autoincrement())
+  email      String
   first_name String
-  last_name String
-  address String
-  attending Boolean
-  diet String
-  comment String
+  last_name  String
+  address    String
+  attending  Boolean
+  diet       String
+  comment    String
+  PlusOne    PlusOne[]
 }
 
 model PlusOne {
-  id Int @id @default(autoincrement())
+  id         Int    @id @default(autoincrement())
   first_name String
-  last_name String
-  diet String
-  guest_id Int
+  last_name  String
+  diet       String
+  guest_id   Int
+  guest      Guest  @relation(fields: [guest_id], references: [id])
 }
