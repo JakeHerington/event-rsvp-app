@@ -5,63 +5,57 @@ export default async function handler(req, res) {
     const data = JSON.parse(req.body);
     switch(method) {
         case 'GET':
-            res.json(read());
+            res.json(readGuests());
             break;
         case 'POST':
-            res.json(create(data));
+            res.json(createGuest(data));
             break;
         case 'PUT':     
-            res.json(update(data));
+            res.json(updateGuest(data));
             break;
     }
 }
 
-export async function read() {
+export async function readGuests() {
     return await prisma.guest.findMany();
 }
 
-export async function create(data) {
-    if(await exists(data.id)) {
-        return update(data);
-    }
-    else {
-        return await prisma.guest.create({
-            data: {
-                first_name: data.first_name,
-                last_name: data.last_name,
-                email: data.email,
-                address: data.address,
-                attending: data.attending,
-                diet: data.diet,
-                comment: data.comment
-            }
-        });
-    }
+export async function createGuest(data) {
+    return await upsert(data);
 }
 
-export async function update(data) {
-    if(exists(data.id)) {
-        return await prisma.guest.update({
-            where: {
-                id: data.id
-            },
-            data: {
-                first_name: data.first_name,
-                last_name: data.last_name,
-                email: data.email,
-                address: data.address,
-                attending: data.attending,
-                diet: data.diet,
-                comment: data.comment
-            }
-        });
-    }
-    else {
-        return create(data);
-    }
+export async function updateGuest(data) {
+    return await upsert(data);
 }
 
-async function exists(id) {
+async function upsert(data) {
+    const guest = await prisma.guest.upsert({
+        where: {
+            id: data.id ? data.id : 0
+        },
+        update: {
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: data.email,
+            address: data.address,
+            attending: data.attending,
+            diet: data.diet,
+            comment: data.comment
+        },
+        create: {
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: data.email,
+            address: data.address,
+            attending: data.attending,
+            diet: data.diet,
+            comment: data.comment
+        }
+    });
+    return guest; 
+}
+
+export async function exists(id) {
     if(id) {
         const exists = await prisma.guest.count({
             where: {

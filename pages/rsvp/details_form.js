@@ -2,7 +2,7 @@ import styles from '/styles/DetailsForm.module.css'
 
 import { useRouter } from 'next/router';
 import { useState } from "react";
-import { read } from '../api/guest/[id]';
+import { readGuest } from '../api/guest/[id]';
 
 export default function DetailsForm(props) {
 
@@ -101,7 +101,7 @@ export default function DetailsForm(props) {
 }
 
 export async function getServerSideProps(context) {
-  const guest = await read(context.query.id);
+  const guest = await readGuest(context.query.id);
   return {
     props: { guest: guest },
   }

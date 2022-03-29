@@ -5,66 +5,60 @@ export default async function handler(req, res) {
     const data = JSON.parse(req.body);
     switch(method) {
         case 'GET':
-            res.json(await read());
+            res.json(await readPlusOnes());
             break;
         case 'POST':
-            res.json(await create(data));
+            res.json(await createPlusOne(data));
             break;
         case 'PUT':     
-            res.json(await update(data));
+            res.json(await updatePlusOne(data));
             break;
     }
 }
 
-export async function read() {
+export async function readPlusOnes() {
     return await prisma.plusOne.findMany();
 }
 
-export async function create(data) {
-    if(await exists(data.id)) {
-        return update(data);
-    }
-    else {
-        return await prisma.plusOne.create({
-            data: {
-                first_name: data.first_name,
-                last_name: data.last_name,
-                email: data.email,
-                diet: data.diet,
-                guest: {
-                    connect: {
-                        id: data.guest_id
-                    }
-                }
-            }
-        });
-    }
+export async function createPlusOne(data) {
+    return await upsert(data);
 }
 
-export async function update(data) {
-    if(await exists(data.id)) {
-        return await prisma.plusOne.update({
-            where: {
-                id: data.id
-            },
-            data: {
-                first_name: data.first_name,
-                last_name: data.last_name,
-                diet: data.diet,
-                guest: {
-                    connect: {
-                        id: data.guest_id
-                    }
-                }
-            }
-        });
-    }
-    else {
-        return create(data);
-    }
+export async function updatePlusOne(data) {
+    return await upsert(data);
 }
 
-async function exists(id) {
+async function upsert(data) {
+    console.log(data, data.id);
+    const plusOne = await prisma.plusOne.upsert({
+        where: {
+            id: data.id ? data.id : 0
+        },
+        update: {
+            first_name: data.first_name,
+            last_name: data.last_name,
+            diet: data.diet,
+            guest: {
+                connect: {
+                    id: data.guest_id
+                }
+            }
+        },
+        create: {
+            first_name: data.first_name,
+            last_name: data.last_name,
+            diet: data.diet,
+            guest: {
+                connect: {
+                    id: data.guest_id
+                }
+            }
+        }
+    });
+    return plusOne; 
+}
+
+export async function exists(id) {
     if(id) {
         const exists = await prisma.plusOne.count({
             where: {

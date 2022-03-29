@@ -2,8 +2,7 @@ import styles from '/styles/AttendanceForm.module.css';
 
 import { useRouter } from 'next/router';
 import { useState } from "react";
-//import { getData } from '../api/guest';
-import { read } from '../api/guest/[id]'
+import { readGuest } from '../api/guest/[id]'
 
 export default function AttendanceForm(props) {
 
@@ -70,7 +69,7 @@ export async function getServerSideProps(context) {
   //   props: { guest: guest },
   // }
 
-  const guest = await read(context.query.id);
+  const guest = await readGuest(context.query.id);
   return {
     props: { guest: guest },
   }
