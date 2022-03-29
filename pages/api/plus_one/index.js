@@ -38,11 +38,6 @@ async function upsert(data) {
             first_name: data.first_name,
             last_name: data.last_name,
             diet: data.diet,
-            guest: {
-                connect: {
-                    id: data.guest_id
-                }
-            }
         },
         create: {
             first_name: data.first_name,

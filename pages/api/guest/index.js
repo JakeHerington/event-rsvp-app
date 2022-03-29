@@ -49,7 +49,12 @@ async function upsert(data) {
             address: data.address,
             attending: data.attending,
             diet: data.diet,
-            comment: data.comment
+            comment: data.comment,
+            event: {
+                connect: {
+                    id: data.event_id,
+                }
+            }
         }
     });
     return guest; 
