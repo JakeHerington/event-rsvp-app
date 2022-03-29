@@ -20,14 +20,16 @@ datasource db {
 
 model Guest {
   id         Int       @id @default(autoincrement())
-  email      String
+  email      String    @unique
   first_name String
   last_name  String
-  address    String
-  attending  Boolean
+  address    String?
+  attending  Boolean   @default(false)
   diet       String
-  comment    String
+  comment    String?
   PlusOne    PlusOne[]
+  event_id   Int
+  event      Event     @relation(fields: [event_id], references: [id])
 }
 
 model PlusOne {
@@ -37,4 +39,14 @@ model PlusOne {
   diet       String
   guest_id   Int
   guest      Guest  @relation(fields: [guest_id], references: [id])
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  name        String
+  date        DateTime
+  description String?
+  Guest       Guest[]
+  date_created DateTime @default(now())
+  date_updated DateTime @default(now())
 }
