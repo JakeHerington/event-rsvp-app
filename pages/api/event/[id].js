@@ -5,24 +5,24 @@ export default async function handler(req, res) {
     const id = req.query.id;
     switch(method) {
         case 'GET':
-            res.json(await readGuest(id));
+            res.json(await readEvent(id));
             break;
         case 'DELETE':
-            res.json(await deleteGuest(id));
+            res.json(await deleteEvent(id));
             break;
     }
 }
   
-export async function readGuest(id) {
-    return await prisma.guest.findUnique({
+export async function readEvent(id) {
+    return await prisma.event.findUnique({
         where: {
             id: parseInt(id)
         }
     });
 }
 
-export async function deleteGuest(id) {
-    return await prisma.guest.delete({
+export async function deleteEvent(id) {
+    return await prisma.event.delete({
         where: {
             id: parseInt(id)
         }

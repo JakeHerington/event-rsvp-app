@@ -8,7 +8,7 @@ export default async function handler(req, res) {
             res.json(readEvents());
             break;
         case 'POST':
-            res.json(creatEevent(data));
+            res.json(createEvent(data));
             break;
         case 'PUT':     
             res.json(updateEvent(data));
@@ -37,7 +37,7 @@ async function upsert(data) {
             name: data.name,      
             date: data.date,
             description: data.description,
-            date_updated: now(),      
+            date_updated: data.date_updated,      
         },
         create: {
             name: data.name,      
